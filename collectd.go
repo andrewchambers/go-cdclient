@@ -79,6 +79,7 @@ func (m *Metric) FillDefaultsAndValidate() {
 }
 
 type Packet interface {
+	AddValues(*Metric, time.Time, ...float64) error
 	AddValueList(ValueList) error
 	Finalize() []byte
 	Reset()
