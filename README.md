@@ -9,7 +9,7 @@ A fast, dependency free implementation of the [collectd](https://github.com/coll
 This package can form an encrypted metric packet in less than 1 microsecond, and we can then publish it
 with a single syscall.
 
-This package has also been optimized such that there are no memory allocations in any of the public facing apis when used in a loop, so adds no garbage collection overhead to your program.
+This package has also been optimized such that there are no memory allocations in any of the public facing apis when used in a loop, so adds negligible garbage collection overhead to your program.
 
 ### Benchmark
 
