@@ -1,5 +1,7 @@
 # go-fast-collectd
 
+[![godocs.io](http://godocs.io/github.com/andrewchambers/go-fast-collectd?status.svg)](http://godocs.io/github.com/andrewchambers/go-fast-collectd)
+
 A fast, dependency free implementation of the [collectd](https://github.com/collectd) binary network protocol.
 
 ## How fast?
