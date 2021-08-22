@@ -1,8 +1,4 @@
-// A package interacting with collectd.
-//
-// Notes:
-// The package goes out of it's way to keep the allocations to an
-// absolute minimum (none during normal operation), so keep it that way if you can.
+// A fast package for sending metrics to collectd.
 package collectd
 
 import (
