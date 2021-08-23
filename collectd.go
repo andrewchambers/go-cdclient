@@ -1,5 +1,5 @@
 // A fast package for sending metrics to collectd.
-package collectd
+package cdclient
 
 import (
 	"errors"

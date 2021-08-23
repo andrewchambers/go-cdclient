@@ -1,6 +1,6 @@
-# go-fast-collectd
+# go-cdclient
 
-[![godocs.io](http://godocs.io/github.com/andrewchambers/go-fast-collectd?status.svg)](http://godocs.io/github.com/andrewchambers/go-fast-collectd)
+[![godocs.io](http://godocs.io/github.com/andrewchambers/go-cdclient?status.svg)](http://godocs.io/github.com/andrewchambers/go-cdclient)
 
 A fast, dependency free implementation of the [collectd](https://github.com/collectd) binary network protocol.
 
@@ -33,4 +33,5 @@ We have more than a 4x speedup at writing encrypted metrics at the time of writi
 
 See the example directory for basic usage.
 
-You should probably design a higher level api to use this package in an application.
+For a higher level library wrapping cdclient see
+[cdmetrics](https://gist.github.com/andrewchambers/go-cdmetrics)

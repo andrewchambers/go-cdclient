@@ -1,13 +1,14 @@
 package main
 
 import (
-	"os"
 	"flag"
 	"fmt"
+	"os"
+	"path"
 	"runtime"
 	"time"
 
-	"github.com/andrewchambers/go-fast-collectd"
+	"github.com/andrewchambers/go-cdclient"
 )
 
 var (
@@ -20,7 +21,7 @@ func main() {
 
 	flag.Parse()
 
-	auth, err := collectd.NewAuthFile(*authfile)
+	auth, err := cdclient.NewAuthFile(*authfile)
 	if err != nil {
 		panic(err)
 	}
@@ -30,23 +31,23 @@ func main() {
 		panic(fmt.Sprintf("no password for: %s", *username))
 	}
 
-	opts := collectd.UDPClientOptions{
+	opts := cdclient.UDPClientOptions{
 		Username: *username,
 		Password: password,
 	}
 
 	switch *mode {
 	case "plain-text":
-		opts.Mode = collectd.UDPPlainText
+		opts.Mode = cdclient.UDPPlainText
 	case "sign":
-		opts.Mode = collectd.UDPSign
+		opts.Mode = cdclient.UDPSign
 	case "encrypt":
-		opts.Mode = collectd.UDPEncrypt
+		opts.Mode = cdclient.UDPEncrypt
 	default:
 		panic("invalid -mode")
 	}
 
-	c, err := collectd.DialUDP("127.0.0.1:25826", opts)
+	c, err := cdclient.DialUDP("127.0.0.1:25826", opts)
 	if err != nil {
 		panic(err)
 	}
@@ -55,14 +56,14 @@ func main() {
 	interval := 1 * time.Second
 	host, _ := os.Hostname()
 
-	total_alloc := &collectd.Metric{
+	total_alloc := &cdclient.Metric{
 		Host:           host,
-		Plugin:         "golang",
-		PluginInstance: os.Args[0],
+		Plugin:         "go",
+		PluginInstance: path.Base(os.Args[0]),
 		Type:           "counter",
 		TypeInstance:   "go-memstats-total-alloc",
-		ValueTypes: []collectd.ValueType{
-			collectd.COUNTER,
+		ValueTypes: []cdclient.ValueType{
+			cdclient.COUNTER,
 		},
 		Interval: interval,
 	}
