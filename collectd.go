@@ -4,7 +4,6 @@ package collectd
 import (
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 )
@@ -34,19 +33,20 @@ type ValueList struct {
 	Values []float64
 }
 
-// Default plugin, used if a metric does not specify it.
-var DefaultPlugin string = "golang"
-
-func (m *Metric) FillDefaultsAndValidate() {
+func (m *Metric) Validate() {
 	if m.Interval == 0 {
-		m.Interval = 10 * time.Second
+		panic("bad metric: interval is zero")
 	}
 	if m.Host == "" {
-		host, _ := os.Hostname()
-		m.Host = host
+		panic("bad metric: host is empty")
 	}
 	if m.Plugin == "" {
-		m.Plugin = DefaultPlugin
+		panic("bad metric: plugin is empty")
+	}
+	for _, v := range m.ValueTypes {
+		if v < 0 || v > ABSOLUTE {
+			panic("bad metric: value type is out of range")
+		}
 	}
 	for i, s := range []string{
 		m.Host,
@@ -56,7 +56,7 @@ func (m *Metric) FillDefaultsAndValidate() {
 		m.TypeInstance,
 	} {
 		if len(s) > 63 {
-			panic(fmt.Sprintf("bad metric identifier: %q is too long", s))
+			panic(fmt.Sprintf("bad metric: %q is too long", s))
 		}
 		var forbidden []rune
 		if i == 1 || i == 3 {
@@ -67,12 +67,12 @@ func (m *Metric) FillDefaultsAndValidate() {
 		}
 		if i != 2 && i != 4 {
 			if len(s) == 0 {
-				panic(fmt.Sprintf("bad metric, mandatory field empty"))
+				panic(fmt.Sprintf("bad metric: mandatory field empty"))
 			}
 		}
 		for _, f := range forbidden {
 			if strings.IndexRune(s, f) != -1 {
-				panic(fmt.Sprintf("bad metric identifier: %q contains %q", s, f))
+				panic(fmt.Sprintf("bad metric: identifier %q contains %q", s, f))
 			}
 		}
 	}

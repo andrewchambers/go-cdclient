@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"flag"
 	"fmt"
 	"runtime"
@@ -51,20 +52,22 @@ func main() {
 	}
 
 	memStats := runtime.MemStats{}
-
 	interval := 1 * time.Second
+	host, _ := os.Hostname()
 
 	total_alloc := &collectd.Metric{
-		Plugin:       "golang",
-		Type:         "counter",
-		TypeInstance: "go-memstats-total-alloc",
+		Host:           host,
+		Plugin:         "golang",
+		PluginInstance: os.Args[0],
+		Type:           "counter",
+		TypeInstance:   "go-memstats-total-alloc",
 		ValueTypes: []collectd.ValueType{
 			collectd.COUNTER,
 		},
 		Interval: interval,
 	}
 
-	total_alloc.FillDefaultsAndValidate()
+	total_alloc.Validate()
 
 	for {
 		runtime.ReadMemStats(&memStats)
