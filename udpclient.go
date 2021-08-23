@@ -37,6 +37,23 @@ type UDPClient struct {
 // Dial connects to the collectd server at address. "address" must be a network
 // address accepted by net.Dial().
 func DialUDP(address string, opts UDPClientOptions) (*UDPClient, error) {
+	c := &UDPClient{}
+	err := c.Reconnect(address, opts)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (c *UDPClient) Reconnect(address string, opts UDPClientOptions) error {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+
+	if c.conn != nil {
+		// best effort flush
+		_ = c.flush()
+	}
+
 	var err error
 	var packet Packet
 
@@ -50,26 +67,29 @@ func DialUDP(address string, opts UDPClientOptions) (*UDPClient, error) {
 	case UDPSign:
 		packet, err = NewSignedPacketSize(opts.Username, opts.Password, opts.BufferSize)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	case UDPEncrypt:
 		packet, err = NewEncryptedPacketSize(opts.Username, opts.Password, opts.BufferSize)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	default:
-		return nil, errors.New("unsupport client mode")
+		return errors.New("unsupport client mode")
 	}
 
 	conn, err := net.Dial("udp", address)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &UDPClient{
-		conn:   conn.(*net.UDPConn),
-		packet: packet,
-	}, nil
+	if c.conn != nil {
+		_ = c.conn.Close()
+	}
+
+	c.conn = conn.(*net.UDPConn)
+	c.packet = packet
+	return nil
 }
 
 func (c *UDPClient) AddValues(m *Metric, t time.Time, values ...float64) error {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"runtime"
 	"time"
 
@@ -9,18 +10,28 @@ import (
 )
 
 var (
-	username = flag.String("username", "", "collectd username")
-	password = flag.String("password", "", "collectd Password")
-	mode     = flag.String("mode", "plain-text", "Mode, one of 'plain-text', 'sign', 'encrypt'")
+	authfile = flag.String("authfile", "./collectd.auth", "collectd Password")
+	username = flag.String("username", "metrics", "collectd auth username")
+	mode     = flag.String("mode", "encrypt", "Mode, one of 'plain-text', 'sign', 'encrypt'")
 )
 
 func main() {
 
 	flag.Parse()
 
+	auth, err := collectd.NewAuthFile(*authfile)
+	if err != nil {
+		panic(err)
+	}
+
+	password, ok := auth.Password(*username)
+	if !ok {
+		panic(fmt.Sprintf("no password for: %s", *username))
+	}
+
 	opts := collectd.UDPClientOptions{
 		Username: *username,
-		Password: *password,
+		Password: password,
 	}
 
 	switch *mode {
