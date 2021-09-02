@@ -34,4 +34,4 @@ We have more than a 4x speedup at writing encrypted metrics at the time of writi
 See the example directory for basic usage.
 
 For a higher level library wrapping cdclient see
-[cdmetrics](https://gist.github.com/andrewchambers/go-cdmetrics)
+[cdmetrics](https://github.com/andrewchambers/go-cdmetrics)
