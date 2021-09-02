@@ -11,11 +11,11 @@ func TestWritePlainTextPacket(t *testing.T) {
 	b := NewPlainTextPacket()
 
 	m := Metric{
-		Host:       "example.com",
-		Plugin:     "golang",
-		Type:       "gauge",
-		ValueTypes: []ValueType{DERIVE},
-		Interval:   10 * time.Second,
+		Host:     "example.com",
+		Plugin:   "golang",
+		Type:     "gauge",
+		DSTypes:  []DSType{DERIVE},
+		Interval: 10 * time.Second,
 	}
 
 	v := ValueList{
@@ -66,17 +66,18 @@ func BenchmarkFormatPlainText(bench *testing.B) {
 	b := NewPlainTextPacket()
 	bench.ReportAllocs()
 	m := Metric{
-		Host:       "example.com",
-		Plugin:     "golang",
-		Type:       "foobar",
-		ValueTypes: []ValueType{DERIVE, GAUGE},
-		Interval:   10 * time.Second,
+		Host:     "example.com",
+		Plugin:   "golang",
+		Type:     "foobar",
+		DSTypes:  []DSType{DERIVE, GAUGE},
+		Interval: 10 * time.Second,
 	}
 	t := time.Unix(1426076671, 123000000)
 	err := b.AddValues(&m, t, 1, math.NaN())
 	if err != nil {
 		bench.Fatal(err)
 	}
+	b.Reset()
 	bench.ResetTimer()
 	for n := 0; n < bench.N; n++ {
 		b.AddValues(&m, t, 1, math.NaN())
@@ -106,7 +107,7 @@ func TestWriteValues(t *testing.T) {
 
 	v := ValueList{
 		Metric: &Metric{
-			ValueTypes: []ValueType{
+			DSTypes: []DSType{
 				GAUGE, DERIVE, GAUGE,
 			}},
 		Values: []float64{

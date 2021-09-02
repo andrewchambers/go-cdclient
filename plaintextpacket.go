@@ -176,11 +176,11 @@ func (b *PlainTextPacket) writeValues(v ValueList) error {
 	binary.BigEndian.PutUint16(tmp[4:6], uint16(len(values)))
 	b.buffer.Write(tmp[:6])
 
-	for _, t := range m.ValueTypes {
+	for _, t := range m.DSTypes {
 		b.buffer.WriteByte(uint8(t))
 	}
 	for i, v := range values {
-		t := m.ValueTypes[i]
+		t := m.DSTypes[i]
 		switch t {
 		case GAUGE:
 			if math.IsNaN(float64(v)) {

@@ -13,11 +13,11 @@ func BenchmarkFormatEncryptedUdpPacket(bench *testing.B) {
 	bench.ReportAllocs()
 	v := ValueList{
 		Metric: &Metric{
-			Host:       "example.com",
-			Plugin:     "golang",
-			Type:       "foobar",
-			ValueTypes: []ValueType{DERIVE, GAUGE},
-			Interval:   10 * time.Second,
+			Host:     "example.com",
+			Plugin:   "golang",
+			Type:     "foobar",
+			DSTypes:  []DSType{DERIVE, GAUGE},
+			Interval: 10 * time.Second,
 		},
 		Time:   time.Unix(1426076671, 123000000), // Wed Mar 11 13:24:31 CET 2015
 		Values: []float64{1, math.NaN()},

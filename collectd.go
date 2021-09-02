@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-type ValueType byte
+type DSType byte
 
 const (
 	COUNTER  = 0
@@ -23,7 +23,7 @@ type Metric struct {
 	PluginInstance string
 	Type           string
 	TypeInstance   string
-	ValueTypes     []ValueType
+	DSTypes        []DSType
 	Interval       time.Duration
 }
 
@@ -43,7 +43,7 @@ func (m *Metric) Validate() {
 	if m.Plugin == "" {
 		panic("bad metric: plugin is empty")
 	}
-	for _, v := range m.ValueTypes {
+	for _, v := range m.DSTypes {
 		if v < 0 || v > ABSOLUTE {
 			panic("bad metric: value type is out of range")
 		}
@@ -78,9 +78,13 @@ func (m *Metric) Validate() {
 	}
 }
 
-type Packet interface {
+type MetricSink interface {
 	AddValues(*Metric, time.Time, ...float64) error
 	AddValueList(ValueList) error
+}
+
+type Packet interface {
+	MetricSink
 	Finalize() []byte
 	Reset()
 }

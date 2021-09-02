@@ -2,7 +2,7 @@
 
 [![godocs.io](http://godocs.io/github.com/andrewchambers/go-cdclient?status.svg)](http://godocs.io/github.com/andrewchambers/go-cdclient)
 
-A fast, dependency free implementation of the [collectd](https://github.com/collectd) binary network protocol.
+A fast, dependency free implementation of the [collectd](https://github.com/collectd) binary network protocol and the collectd exec plugin format.
 
 ## How fast?
 

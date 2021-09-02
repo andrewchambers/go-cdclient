@@ -13,11 +13,11 @@ func BenchmarkFormatSignedPacket(bench *testing.B) {
 	b, _ := NewSignedPacket("username", "password")
 	bench.ReportAllocs()
 	m := Metric{
-		Host:       "example.com",
-		Plugin:     "golang",
-		Type:       "foobar",
-		ValueTypes: []ValueType{DERIVE, GAUGE},
-		Interval:   10 * time.Second,
+		Host:     "example.com",
+		Plugin:   "golang",
+		Type:     "foobar",
+		DSTypes:  []DSType{DERIVE, GAUGE},
+		Interval: 10 * time.Second,
 	}
 	v := ValueList{
 		Metric: &m,
