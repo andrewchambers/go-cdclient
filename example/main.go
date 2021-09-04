@@ -62,7 +62,7 @@ func main() {
 		PluginInstance: path.Base(os.Args[0]),
 		Type:           "counter",
 		TypeInstance:   "go-memstats-total-alloc",
-		ValueTypes: []cdclient.ValueType{
+		DSTypes: []cdclient.DSType{
 			cdclient.COUNTER,
 		},
 		Interval: interval,

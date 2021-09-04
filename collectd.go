@@ -33,19 +33,19 @@ type ValueList struct {
 	Values []float64
 }
 
-func (m *Metric) Validate() {
+func (m *Metric) Validate() error {
 	if m.Interval == 0 {
-		panic("bad metric: interval is zero")
+		return errors.New("interval is zero")
 	}
 	if m.Host == "" {
-		panic("bad metric: host is empty")
+		return errors.New("host is empty")
 	}
 	if m.Plugin == "" {
-		panic("bad metric: plugin is empty")
+		return errors.New("plugin is empty")
 	}
 	for _, v := range m.DSTypes {
 		if v < 0 || v > ABSOLUTE {
-			panic("bad metric: value type is out of range")
+			return errors.New("value type is out of range")
 		}
 	}
 	for i, s := range []string{
@@ -56,7 +56,7 @@ func (m *Metric) Validate() {
 		m.TypeInstance,
 	} {
 		if len(s) > 63 {
-			panic(fmt.Sprintf("bad metric: %q is too long", s))
+			return fmt.Errorf("%q is too long", s)
 		}
 		var forbidden []rune
 		if i == 1 || i == 3 {
@@ -67,15 +67,17 @@ func (m *Metric) Validate() {
 		}
 		if i != 2 && i != 4 {
 			if len(s) == 0 {
-				panic(fmt.Sprintf("bad metric: mandatory field empty"))
+				return fmt.Errorf("mandatory field empty")
 			}
 		}
 		for _, f := range forbidden {
 			if strings.IndexRune(s, f) != -1 {
-				panic(fmt.Sprintf("bad metric: identifier %q contains %q", s, f))
+				return fmt.Errorf("identifier %q contains %q", s, f)
 			}
 		}
 	}
+
+	return nil
 }
 
 type MetricSink interface {
